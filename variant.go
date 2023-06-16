@@ -37,7 +37,7 @@ func (v variant) AsString() string {
 }
 
 func (v variant) AsInt() int {
-	if v.Value != nil {
+	
 		switch val := v.Value.(type) {
 		case int:
 			return v.Value.(int)
@@ -49,17 +49,20 @@ func (v variant) AsInt() int {
 			return int(v.Value.(int32))
 		case int64:
 			return int(v.Value.(int64))
+		case nil:
+			return 0
+			
 		default:
 			t := reflect.TypeOf(val)
 			log.Printf("unable to convert data type to int, type: %v", t)
 			return 0
 		}
-	}
+	
 	return 0
 }
 
 func (v variant) AsInt64() int64 {
-	if v.Value != nil {
+	
 		switch val := v.Value.(type) {
 		case int:
 			return int64(v.Value.(int))
@@ -71,12 +74,14 @@ func (v variant) AsInt64() int64 {
 			return int64(v.Value.(int32))
 		case int64:
 			return v.Value.(int64)
+		case nil:
+			return int64(0)	
 		default:
 			t := reflect.TypeOf(val)
 			log.Printf("unable to convert data type to int64, type: %v", t)
 			return int64(0)
 		}
-	}
+	
 	return int64(0)
 }
 
@@ -87,6 +92,8 @@ func (v variant) AsFloat() float32 {
 			return val
 		case float64:
 			return float32(val)
+		case nil:
+			float32(0)	
 		case string:
 			floatValue, err := strconv.ParseFloat(val, 32)
 			if err != nil {
@@ -119,6 +126,8 @@ func (v variant) AsFloat64() float64 {
 				return float64(0)
 			}
 			return floatValue
+		case nil:
+			float64(0)	
 		default:
 			t := reflect.TypeOf(val)
 			log.Printf("unable to convert data type to float64, type: %v", t)
@@ -129,7 +138,7 @@ func (v variant) AsFloat64() float64 {
 }
 
 func (v variant) AsBool() bool {
-	if v.Value != nil {
+
 		switch val := v.Value.(type) {
 		case int:
 			return v.Value.(int) == 1
@@ -141,6 +150,8 @@ func (v variant) AsBool() bool {
 			return v.Value.(int32) == 1
 		case int64:
 			return v.Value.(int64) == 1
+		case nil:
+			return false
 		case string:
 			value := strings.ToUpper(strings.Trim(v.Value.(string), " "))
 			if value == "1" || value == "S" || value == "Y" {
@@ -153,22 +164,23 @@ func (v variant) AsBool() bool {
 			log.Printf("unable to convert data type to bool, type: %v", t)
 			return false
 		}
-	}
+	
 	return false
 }
 
 func (v variant) AsDateTime() time.Time {
-	if v.Value != nil {
+	data, _ := time.Parse(time.DateTime, time.DateTime)
 		switch v.Value.(type) {
 		case time.Time:
 			return v.Value.(time.Time)
+		case nil:
+	          return data
 		default:
 			log.Printf("unable to convert data type to time.")
 			data, _ := time.Parse(time.DateTime, time.DateTime)
 			return data
-		}
-	}
-	data, _ := time.Parse(time.DateTime, time.DateTime)
+		}	
+	
 	return data
 }
 
